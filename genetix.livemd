@@ -1,0 +1,37 @@
+# Genetix
+
+```elixir
+Mix.install([
+  {:kino_explorer, "~> 0.1.20"},
+  {:genetix, "~> 0.1"}
+])
+```
+
+## Section
+
+```elixir
+  defmodule OneMax do
+    @behaviour Genetix.Problem
+    alias Genetix.Types.Chromosome
+
+    @impl true
+    def genotype(opts \\ []) do
+      # Notice that in this case, we use `size` as a hyperparameter to define the gene size.
+      size = Keyword.get(opts, :size, 10)
+      genes = for _ <- 1..42, do: Enum.random(0..1)
+      %Chromosome{genes: genes, size: size}
+    end
+
+    @impl true
+    def fitness_function(chromosome, _opts \\ []), do: Enum.sum(chromosome.genes)
+
+    @impl true
+    def terminate?([best | _], _opts \\ []) do
+      best.fitness == best.size
+    end
+  end
+```
+
+```elixir
+Genetix.run(Genetix.Problems.OneMax, size: 100)
+```
